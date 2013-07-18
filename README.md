@@ -1,6 +1,6 @@
-# Hostlile - Simple `/etc/hosts` manipulation
+# Hostile - Simple `/etc/hosts` manipulation
 
-![hostile](https://raw.github.com/feross/hostile/master/img.png)
+![hostile](https://raw.github.com/PeerCDN/hostile/master/img.png)
 
 ## Installation
 
@@ -25,7 +25,6 @@ Remove a rule from /etc/hosts. If the rule does not exist, then this does
 nothing.
 
 ```js
-var hostile = require('hostile')
 hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
   if (err) {
     console.error(err)
@@ -42,7 +41,7 @@ For advanced usage, see `index.js` for more useful functionality.
 
 The MIT License (MIT)
 
-Copyright (c) Feross Aboukhadijeh
+Copyright (c) PeerCDN
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
