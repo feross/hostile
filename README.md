@@ -11,6 +11,7 @@
 Add a rule to /etc/hosts. If the rule already exists, then this does nothing.
 
 ```js
+var hostile = require('hostile')
 hostile.set('127.0.0.1', 'cdn.peercdn.com', function (err) {
   if (err) {
     console.error(err)
@@ -24,6 +25,7 @@ Remove a rule from /etc/hosts. If the rule does not exist, then this does
 nothing.
 
 ```js
+var hostile = require('hostile')
 hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
   if (err) {
     console.error(err)
