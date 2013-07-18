@@ -1,0 +1,15 @@
+{
+  "name": "hostile",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
+  "license": "MIT",
+  "dependencies": {
+    "split": "*",
+    "through": "*"
+  }
+}
