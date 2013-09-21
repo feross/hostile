@@ -1,4 +1,5 @@
-# Hostile - Simple `/etc/hosts` manipulation
+# node-hostile
+### Simple, programmatic `/etc/hosts` manipulation
 
 ![hostile](https://raw.github.com/PeerCDN/hostile/master/img.png)
 
@@ -6,9 +7,17 @@
 
 `npm install hostile`
 
-## Simple Usage
+## OS Support
 
-Add a rule to /etc/hosts. If the rule already exists, then this does nothing.
+**Works on OS X and Linux.** Assumes hosts file will be at `/etc/hosts`. I'm open to a pull request that adds Windows support.
+
+## Must run with `sudo`
+
+If your OS requires admin privileges to edit the hosts file (most OSs do), then you'll need to run your node script with `sudo`. I use `hostile` in a command line script, so running with `sudo` is easy and not a security risk.
+
+I wouldn't recommend running your production node server with admin privileges unless you downgrade to a normal user with [`process.setuid(id)`](http://nodejs.org/api/process.html#process_process_setuid_id) before you start accepting requests.
+
+## Simple Usage
 
 ```js
 var hostile = require('hostile')
@@ -21,8 +30,7 @@ hostile.set('127.0.0.1', 'cdn.peercdn.com', function (err) {
 })
 ```
 
-Remove a rule from /etc/hosts. If the rule does not exist, then this does
-nothing.
+This adds a rule to /etc/hosts. If the rule already exists, then this does nothing.
 
 ```js
 hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
@@ -34,14 +42,18 @@ hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
 })
 ```
 
-For advanced usage, see `index.js` for more useful functionality.
+This removes a rule from /etc/hosts. If the rule does not exist, then this does
+nothing.
 
+## Advanced usage
+
+For other features (not documented), see `index.js`. If this module doesn't do exactly what you need, feel free to send a pull request!
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) PeerCDN
+Copyright (c) Feross Aboukhadijeh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
