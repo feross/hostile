@@ -1,5 +1,5 @@
-# node-hostile
-### Simple, programmatic `/etc/hosts` manipulation
+# hostile
+### Simple, programmatic `/etc/hosts` manipulation (in node.js)
 
 ![hostile](https://raw.github.com/feross/hostile/master/img.png)
 
