@@ -1,7 +1,7 @@
 # node-hostile
 ### Simple, programmatic `/etc/hosts` manipulation
 
-![hostile](https://raw.github.com/PeerCDN/hostile/master/img.png)
+![hostile](https://raw.github.com/feross/hostile/master/img.png)
 
 ## Installation
 

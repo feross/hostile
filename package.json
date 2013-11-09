@@ -19,7 +19,7 @@
     "etc hosts",
     "change hosts"
   ],
-  "repository": "git://github.com/PeerCDN/hostile",
+  "repository": "git://github.com/feross/hostile",
   "engines": {
     "node": "*"
   }
