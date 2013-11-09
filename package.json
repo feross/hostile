@@ -1,6 +1,6 @@
 {
   "name": "hostile",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple /etc/hosts manipulation",
   "main": "index.js",
   "scripts": {
