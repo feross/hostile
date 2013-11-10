@@ -1,8 +1,10 @@
+/** global chrome */
+
 var fs = require('fs')
 var split = require('split')
 var through = require('through')
 
-const WINDOWS = process.platform === 'win32'
+const WINDOWS = (process.platform === 'win32')
 const EOL = WINDOWS ? '\r\n' : '\n'
 const HOSTS = WINDOWS ? '/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
 
@@ -16,7 +18,7 @@ const HOSTS = WINDOWS ? '/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
  */
 exports.get = function (preserveFormatting, cb) {
   var lines = []
-  fs.createReadStream( HOSTS, 'utf8')
+  fs.createReadStream(HOSTS, 'utf8')
     .pipe(split())
     .pipe(through(function (line) {
       var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
@@ -95,11 +97,11 @@ exports.remove = function (ip, host, cb) {
  * @param  {function(Error)} cb
  */
 exports.writeFile = function (lines, cb) {
-  fs.stat( HOSTS, function (err, stat) {
+  fs.stat(HOSTS, function (err, stat) {
     if (err) {
       cb(err)
     } else {
-      var s = fs.createWriteStream( HOSTS, { mode: stat.mode })
+      var s = fs.createWriteStream(HOSTS, { mode: stat.mode })
       s.on('close', cb)
       s.on('error', cb)
 
@@ -107,7 +109,7 @@ exports.writeFile = function (lines, cb) {
         if (Array.isArray(line)) {
           line = line[0] + ' ' + line[1]
         }
-        s.write(line + (lineNum === lines.length - 1 ? '' : EOL ))
+        s.write(line + (lineNum === lines.length - 1 ? '' : EOL))
       })
       s.end()
     }
