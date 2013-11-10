@@ -9,7 +9,8 @@
 
 ## OS Support
 
-**Works on OS X and Linux.** Assumes hosts file will be at `/etc/hosts`. I'm open to a pull request that adds Windows support.
+- **OS X** and **Linux**: Assumes hosts file will be at `/etc/hosts`.
+- **Windows**: Assumes hosts file is at `/Windows/System32/drivers/etc/hosts`.
 
 ## Must run with `sudo`
 

@@ -2,6 +2,10 @@ var fs = require('fs')
 var split = require('split')
 var through = require('through')
 
+const WINDOWS = process.platform === 'win32'
+const EOL = WINDOWS ? '\r\n' : '\n'
+const HOSTS = WINDOWS ? '/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
+
 /**
  * Get a list of the lines that make up the /etc/hosts file. If the
  * `preserveFormatting` parameter is true, then include comments, blank lines
@@ -12,7 +16,7 @@ var through = require('through')
  */
 exports.get = function (preserveFormatting, cb) {
   var lines = []
-  fs.createReadStream('/etc/hosts', 'utf8')
+  fs.createReadStream( HOSTS, 'utf8')
     .pipe(split())
     .pipe(through(function (line) {
       var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
@@ -91,11 +95,11 @@ exports.remove = function (ip, host, cb) {
  * @param  {function(Error)} cb
  */
 exports.writeFile = function (lines, cb) {
-  fs.stat('/etc/hosts', function (err, stat) {
+  fs.stat( HOSTS, function (err, stat) {
     if (err) {
       cb(err)
     } else {
-      var s = fs.createWriteStream('/etc/hosts', { mode: stat.mode })
+      var s = fs.createWriteStream( HOSTS, { mode: stat.mode })
       s.on('close', cb)
       s.on('error', cb)
 
@@ -103,7 +107,7 @@ exports.writeFile = function (lines, cb) {
         if (Array.isArray(line)) {
           line = line[0] + ' ' + line[1]
         }
-        s.write(line + (lineNum === lines.length - 1 ? '' : '\n'))
+        s.write(line + (lineNum === lines.length - 1 ? '' : EOL ))
       })
       s.end()
     }
