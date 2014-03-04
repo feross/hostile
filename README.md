@@ -16,7 +16,7 @@ npm install hostile
 ## os support
 
 - **OS X** and **Linux**: Assumes hosts file will be at `/etc/hosts`.
-- **Windows**: Assumes hosts file is at `/Windows/System32/drivers/etc/hosts`.
+- **Windows**: Assumes hosts file is at `C:/Windows/System32/drivers/etc/hosts`.
 
 ## must use `sudo`!
 
