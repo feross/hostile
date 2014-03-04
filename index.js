@@ -6,7 +6,7 @@ var through = require('through')
 
 const WINDOWS = (process.platform === 'win32')
 const EOL = WINDOWS ? '\r\n' : '\n'
-const HOSTS = WINDOWS ? '/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
+const HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
 
 /**
  * Get a list of the lines that make up the /etc/hosts file. If the
