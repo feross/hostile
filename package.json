@@ -1,30 +1,34 @@
 {
-    "name": "hostile",
-    "version": "0.2.2",
-    "description": "Simple /etc/hosts manipulation",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
-    "license": "MIT",
-    "dependencies": {
-        "split": "*",
-        "through": "*"
-    },
-    "preferGlobal": "true",
-    "bin": {
-        "hostile": "cli.js"
-    },
-    "keywords": [
-        "/etc/hosts",
-        "hosts file",
-        "hostname",
-        "etc hosts",
-        "change hosts"
-    ],
-    "repository": "git://github.com/feross/hostile",
-    "engines": {
-        "node": "*"
-    }
+  "name": "hostile",
+  "description": "Simple /etc/hosts manipulation",
+  "version": "0.2.2",
+  "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
+  "bin": {
+    "hostile": "bin/cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/feross/hostile/issues"
+  },
+  "dependencies": {
+    "split": "*",
+    "through": "*"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "homepage": "https://github.com/feross/hostile",
+  "keywords": [
+    "/etc/hosts",
+    "hosts file",
+    "hostname",
+    "etc hosts",
+    "change hosts"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "preferGlobal": "true",
+  "repository": "git://github.com/feross/hostile",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
