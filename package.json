@@ -1,7 +1,7 @@
 {
   "name": "hostile",
   "description": "Simple /etc/hosts manipulation",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bin": {
     "hostile": "bin/cli.js"
