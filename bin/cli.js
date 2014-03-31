@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var hostile = require('./index.js');
+var hostile = require('../');
 var ipRegex = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/;
 
 /**
