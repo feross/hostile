@@ -1,27 +1,56 @@
 #!/usr/bin/env node
 
-var hostile = require('../');
-var ipRegex = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/;
+var hostile = require('../'),
+    program = require('commander'),
+    colors = require('colors'),
+    omelette = require("omelette"),
+    ipRegex = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/,
+    complete = omelette("hostile <action> <host>");
+
 
 /**
- * Receive user input and try to match with an implemented method
- * If no match is found print help
+ * Set up auto completion
  */
-var userArguments = process.argv.slice(2),
-    action = userArguments[0],
-    params = userArguments.slice(1);
+complete.on('action', function () {
+    return this.reply(['list', 'set', 'remove']);
+});
 
-if (action === 'list') {
-    return list();
-} else if (action === 'set') {
-    return set(params[0], params[1]);
-} else if (action === 'remove') {
-    return remove(params[0]);
+complete.on('host', function(action) {
+    if (action === 'set') {
+        return this.reply(['localhost']);
+    }
+});
+
+complete.init();
+
+
+/**
+ * Set up command parameters
+ */
+program
+    .command('list')
+    .description('List all current domain records in hosts file')
+    .action(list);
+
+program
+    .command('set [ip] [host]')
+    .description('Set a domain in the hosts file')
+    .action(set);
+
+program
+    .command('remove [domain]')
+    .description('Remove a domain from the hosts file')
+    .action(remove);
+
+// process application arguments
+program.parse(process.argv);
+
+/**
+ * If no args are given display help
+ */
+if (!program.args.length) {
+    program.help();
 }
-
-// otherwise print help
-help();
-
 
 /**
  * Display all current ip records
@@ -29,7 +58,12 @@ help();
 function list() {
     hostile.get(false, function (err, lines) {
         lines.forEach(function (item) {
-            console.log(item);
+            if (item.length > 1) {
+                console.log(item[0],item[1].green);
+            } else {
+                console.log(item);
+            }
+
         });
     });
 }
@@ -46,7 +80,7 @@ function set(ip, host) {
     if (ip === 'local' || ip === 'localhost') {
         ip = '127.0.0.1';
     } else {
-        if (!new RegExp(ipRegex).test(ip)) {
+        if (!ipRegex.test(ip)) {
             console.log('Invalid IP address');
             return;
         }
@@ -67,7 +101,7 @@ function set(ip, host) {
 function remove(host) {
     hostile.get(false, function (err, lines) {
         lines.forEach(function (item) {
-            if (item.indexOf(host) > -1) {
+            if (item[1].indexOf(host) > -1) {
                 hostile.remove(item[0], host, function(err) {
                     if (err) {
                         console.log('Error: ' + err);
@@ -80,23 +114,4 @@ function remove(host) {
     });
 
 }
-
-/**
- * Display Help
- */
-function help() {
-    console.log('Hostile CLI');
-    console.log('');
-    console.log('Set a domain:');
-    console.log('hostile set 127.0.0.1 domain.com');
-    console.log('hostile set local domain.com (maps to 127.0.0.1)');
-    console.log('hostile set localhost domain.com (maps to 127.0.0.1)');
-    console.log('');
-    console.log('Remove a domain');
-    console.log('hostile remove domain.com');
-    console.log('');
-    console.log('list all domains');
-    console.log('hostile list');
-}
-
 
