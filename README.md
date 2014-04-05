@@ -52,6 +52,48 @@ hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
 This removes a rule from /etc/hosts. If the rule does not exist, then this does
 nothing.
 
+## cli mode
+
+#### List all current domain records in hosts file
+
+```
+hostile list
+```    
+
+#### set a domain in the hosts file
+
+```
+hostile set [ip] [host]
+```    
+examples:
+```
+hostile set localhost domain.com
+hostile set 192.168.33.10 domain.com
+```
+
+#### Remove a domain from the hosts file
+
+```
+hostile remove [host]
+```    
+example:
+```
+hostile remove domain.com
+```
+
+#### Set up auto completion
+
+Bash
+```
+hostile --completion >> ~/hostile.completion.sh
+echo 'source ~/hostile.completion.sh' >> .bash_profile
+```
+
+Zsh
+```
+echo '. <(./hostile --completion)' >> .zshrc
+```
+
 ## advanced usage
 
 For other features (not documented), see `index.js`. If this module doesn't do exactly what you need, feel free to send a pull request!
