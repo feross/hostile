@@ -102,7 +102,6 @@ function remove(host) {
     hostile.get(false, function (err, lines) {
         lines.forEach(function (item) {
             if (item[1].indexOf(host) > -1) {
-                console.log(item[1]);
                 hostile.remove(item[0], host, function(err) {
                     if (err) {
                         console.log('Error: ' + err);
