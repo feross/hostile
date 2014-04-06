@@ -1,4 +1,5 @@
 var fs = require('fs')
+var once = require('once')
 var split = require('split')
 var through = require('through')
 
@@ -15,6 +16,7 @@ var HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
  * @param  {function(err, lines)} cb
  */
 exports.get = function (preserveFormatting, cb) {
+  cb = once(cb)
   var lines = []
   fs.createReadStream(HOSTS, 'utf8')
     .pipe(split())
@@ -96,6 +98,7 @@ exports.remove = function (ip, host, cb) {
  */
 exports.writeFile = function (lines, cb) {
   fs.stat(HOSTS, function (err, stat) {
+  cb = once(cb)
     if (err) {
       cb(err)
     } else {
