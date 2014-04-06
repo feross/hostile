@@ -58,6 +58,9 @@ if (!program.args.length) {
  */
 function list () {
   hostile.get(false, function (err, lines) {
+    if (err) {
+      return error(err.message)
+    }
     lines.forEach(function (item) {
       if (item.length > 1) {
         console.log(item[0], chalk.green(item[1]))
