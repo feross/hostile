@@ -37,7 +37,7 @@ hostile set 192.168.33.10 domain.com
 
 #### remove a domain from the hosts file
 
-```
+```bash
 hostile remove [host]
 ```
 
@@ -49,13 +49,13 @@ hostile remove domain.com
 #### set up auto completion
 
 bash:
-```
+```bash
 hostile --completion >> ~/hostile.completion.sh
 echo 'source ~/hostile.completion.sh' >> .bash_profile
 ```
 
 zsh:
-```
+```bash
 echo '. <(./hostile --completion)' >> .zshrc
 ```
 
