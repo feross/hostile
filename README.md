@@ -100,10 +100,22 @@ hostile.remove('127.0.0.1', 'peercdn.com', function (err) {
 
 If the rule does not exist, then this does nothing.
 
-#### more
+#### get all lines in /etc/hosts
 
-For other methods (not documented), see `index.js`. If this module doesn't do exactly
-what you need, feel free to send a pull request!
+```js
+// If `preserveFormatting` is true, then include comments, blank lines and other
+// non-host entries in the result
+var preserveFormatting = false
+
+hostile.get(preserveFormatting, function (err, lines) {
+  if (err) {
+    console.error(err.message)
+  }
+  lines.forEach(function (line) {
+    console.log(line)
+  })
+})
+```
 
 ## contributors
 
