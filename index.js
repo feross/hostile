@@ -3,9 +3,14 @@ var once = require('once')
 var split = require('split')
 var through = require('through')
 
-var WINDOWS = (process.platform === 'win32')
-var EOL = WINDOWS ? '\r\n' : '\n'
-var HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
+var WINDOWS = process.platform === 'win32'
+var EOL = WINDOWS
+  ? '\r\n'
+  : '\n'
+
+exports.HOSTS = WINDOWS
+  ? 'C:/Windows/System32/drivers/etc/hosts'
+  : '/etc/hosts'
 
 /**
  * Get a list of the lines that make up the /etc/hosts file. If the
@@ -18,7 +23,7 @@ var HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
 exports.get = function (preserveFormatting, cb) {
   cb = once(cb)
   var lines = []
-  fs.createReadStream(HOSTS, 'utf8')
+  fs.createReadStream(exports.HOSTS, 'utf8')
     .pipe(split())
     .pipe(through(function (line) {
       var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
@@ -97,22 +102,21 @@ exports.remove = function (ip, host, cb) {
  * @param  {function(Error)} cb
  */
 exports.writeFile = function (lines, cb) {
-  fs.stat(HOSTS, function (err, stat) {
   cb = once(cb)
+  fs.stat(exports.HOSTS, function (err, stat) {
     if (err) {
-      cb(err)
-    } else {
-      var s = fs.createWriteStream(HOSTS, { mode: stat.mode })
-      s.on('close', cb)
-      s.on('error', cb)
-
-      lines.forEach(function (line, lineNum) {
-        if (Array.isArray(line)) {
-          line = line[0] + ' ' + line[1]
-        }
-        s.write(line + (lineNum === lines.length - 1 ? '' : EOL))
-      })
-      s.end()
+      return cb(err)
     }
+    var s = fs.createWriteStream(exports.HOSTS, { mode: stat.mode })
+    s.on('close', cb)
+    s.on('error', cb)
+
+    lines.forEach(function (line, lineNum) {
+      if (Array.isArray(line)) {
+        line = line[0] + ' ' + line[1]
+      }
+      s.write(line + (lineNum === lines.length - 1 ? '' : EOL))
+    })
+    s.end()
   })
 }
