@@ -1,12 +1,10 @@
-/** global chrome */
-
 var fs = require('fs')
 var split = require('split')
 var through = require('through')
 
-const WINDOWS = (process.platform === 'win32')
-const EOL = WINDOWS ? '\r\n' : '\n'
-const HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
+var WINDOWS = (process.platform === 'win32')
+var EOL = WINDOWS ? '\r\n' : '\n'
+var HOSTS = WINDOWS ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts'
 
 /**
  * Get a list of the lines that make up the /etc/hosts file. If the
