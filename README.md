@@ -3,100 +3,112 @@
 [![NPM](http://img.shields.io/npm/dm/hostile.svg)](https://npmjs.org/package/hostile)
 [![Gittip](http://img.shields.io/gittip/feross.svg)](https://www.gittip.com/feross/)
 
-### Simple, programmatic `/etc/hosts` manipulation (in node.js)
+#### Simple, programmatic `/etc/hosts` manipulation (in node.js)
 
 ![hostile](https://raw.github.com/feross/hostile/master/img.png)
 
 ## install
 
-```
+```bash
 npm install hostile
 ```
 
-## os support
-
-- **OS X** and **Linux**: Assumes hosts file will be at `/etc/hosts`.
-- **Windows**: Assumes hosts file is at `C:/Windows/System32/drivers/etc/hosts`.
-
-## must use `sudo`!
-
-If your OS requires admin privileges to edit the hosts file (most OSs do), then you'll need to run your node script with `sudo`. I use `hostile` in a command line script, so running with `sudo` is easy and not a security risk.
-
-I wouldn't recommend running your production node server with admin privileges unless you downgrade to a normal user with [`process.setuid(id)`](http://nodejs.org/api/process.html#process_process_setuid_id) before you start accepting requests.
-
 ## usage
 
-```js
-var hostile = require('hostile')
-hostile.set('127.0.0.1', 'cdn.peercdn.com', function (err) {
-  if (err) {
-    console.error(err)
-  } else {
-    console.log('set /etc/hosts successfully!')
-  }
-})
-```
+If you use OS X or Linux, this module assumes your hosts file is at `/etc/hosts`. On
+Windows, it assumes your hosts file is at `C:/Windows/System32/drivers/etc/hosts`.
 
-This adds a rule to /etc/hosts. If the rule already exists, then this does nothing.
+**Commands that modify the hosts file require root privileges.**
 
-```js
-hostile.remove('127.0.0.1', 'cdn.peercdn.com', function (err) {
-  if (err) {
-    console.error(err)
-  } else {
-    console.log('set /etc/hosts successfully!')
-  }
-})
-```
+#### list all host file records
 
-This removes a rule from /etc/hosts. If the rule does not exist, then this does
-nothing.
-
-## cli mode
-
-#### List all current domain records in hosts file
-
-```
+```bash
 hostile list
-```    
+```
 
 #### set a domain in the hosts file
 
-```
+```bash
 hostile set [ip] [host]
-```    
-examples:
 ```
+
+examples:
+```bash
 hostile set localhost domain.com
 hostile set 192.168.33.10 domain.com
 ```
 
-#### Remove a domain from the hosts file
+#### remove a domain from the hosts file
 
 ```
 hostile remove [host]
-```    
-example:
 ```
+
+example:
+```bash
 hostile remove domain.com
 ```
 
-#### Set up auto completion
+#### set up auto completion
 
-Bash
+bash:
 ```
 hostile --completion >> ~/hostile.completion.sh
 echo 'source ~/hostile.completion.sh' >> .bash_profile
 ```
 
-Zsh
+zsh:
 ```
 echo '. <(./hostile --completion)' >> .zshrc
 ```
 
-## advanced usage
+## methods
 
-For other features (not documented), see `index.js`. If this module doesn't do exactly what you need, feel free to send a pull request!
+Commands that modify the hosts file require root privileges.
+
+I wouldn't recommend running your production node server with admin privileges unless you
+downgrade to a normal user with
+[`process.setuid(id)`](http://nodejs.org/api/process.html#process_process_setuid_id)
+before you start accepting requests.
+
+#### add a rule to /etc/hosts
+
+```js
+var hostile = require('hostile')
+hostile.set('127.0.0.1', 'peercdn.com', function (err) {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log('set /etc/hosts successfully!')
+  }
+})
+```
+
+If the rule already exists, then this does nothing.
+
+#### remove a rule from /etc/hosts
+
+```js
+hostile.remove('127.0.0.1', 'peercdn.com', function (err) {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log('set /etc/hosts successfully!')
+  }
+})
+```
+
+If the rule does not exist, then this does nothing.
+
+#### more
+
+For other methods (not documented), see `index.js`. If this module doesn't do exactly
+what you need, feel free to send a pull request!
+
+## contributors
+
+- [Feross Aboukhadijeh](http://feross.org) (author)
+- [Maayan Glikser](https://github.com/morsdyce)
 
 ## license
 
