@@ -1,4 +1,4 @@
-# hostile [![travis](http://img.shields.io/travis/feross/hostile.svg)](https://travis-ci.org/feross/hostile) [![npm](http://img.shields.io/npm/v/hostile.svg)](https://npmjs.org/package/hostile) [![gittip](http://img.shields.io/gittip/feross.svg)](https://www.gittip.com/feross/)
+# hostile [![travis](https://img.shields.io/travis/feross/hostile.svg)](https://travis-ci.org/feross/hostile) [![npm](https://img.shields.io/npm/v/hostile.svg)](https://npmjs.org/package/hostile) [![gittip](https://img.shields.io/gittip/feross.svg)](https://www.gittip.com/feross/)
 
 #### Simple, programmatic `/etc/hosts` manipulation (in node.js)
 
