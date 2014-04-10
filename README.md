@@ -12,7 +12,7 @@ npm install hostile
 
 ## usage
 
-If you use OS X or Linux, this module assumes your hosts file is at `/etc/hosts`. On
+If you use OS X or Linux, this module assumes your hosts file is at `/etc/hosts`. On
 Windows, it assumes your hosts file is at `C:/Windows/System32/drivers/etc/hosts`.
 
 **Commands that modify the hosts file require root privileges.**
