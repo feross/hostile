@@ -2,55 +2,33 @@
 
 var chalk = require('chalk')
 var hostile = require('../')
-var omelette = require('omelette')
-var program = require('commander')
+var minimist = require('minimist')
 
 var IP_RE = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/
 
-var complete = omelette('hostile <action> <host>')
+var argv = minimist(process.argv.slice(2))
+
+var command = argv._[0]
+
+if (command === 'list' || command === 'ls') list()
+if (command === 'set') set(argv._[1], argv._[2])
+if (command === 'remove') remove(argv._[1])
+if (!command) help()
 
 /**
- * Set up auto completion
+ * Print help message
  */
-complete.on('action', function () {
-  return this.reply(['list', 'set', 'remove'])
-})
+function help () {
+  console.log(function () {/*
+  Usage: hostile [command]
 
-complete.on('host', function (action) {
-  if (action === 'set') {
-    return this.reply(['localhost'])
-  }
-})
+    Commands:
 
-complete.init()
+      list                   List all current domain records in hosts file
+      set [ip] [host]        Set a domain in the hosts file
+      remove [domain]        Remove a domain from the hosts file
 
-
-/**
- * Set up command parameters
- */
-program
-  .command('list')
-  .description('List all current domain records in hosts file')
-  .action(list)
-
-program
-  .command('set [ip] [host]')
-  .description('Set a domain in the hosts file')
-  .action(set)
-
-program
-  .command('remove [domain]')
-  .description('Remove a domain from the hosts file')
-  .action(remove)
-
-// process application arguments
-program.parse(process.argv)
-
-/**
- * If no args are given display help
- */
-if (!program.args.length) {
-  program.help()
+    */}.toString().split(/\n/).slice(1, -1).join('\n'))
 }
 
 /**
