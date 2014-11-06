@@ -35,17 +35,12 @@ function help () {
  * Display all current ip records
  */
 function list () {
-  hostile.get(false, function (err, lines) {
-    if (err) {
-      return error(err.message)
+  hostile.get(false).forEach(function (item) {
+    if (item.length > 1) {
+      console.log(item[0], chalk.green(item[1]))
+    } else {
+      console.log(item)
     }
-    lines.forEach(function (item) {
-      if (item.length > 1) {
-        console.log(item[0], chalk.green(item[1]))
-      } else {
-        console.log(item)
-      }
-    })
   })
 }
 
@@ -65,12 +60,8 @@ function set (ip, host) {
     return error('Invalid IP address')
   }
 
-  hostile.set(ip, host, function (err) {
-    if (err) {
-      return error('Error: ' + err.message + '. Are you running as root?')
-    }
-    console.log(chalk.green('Added ' + host))
-  })
+  hostile.set(ip, host)
+  console.log(chalk.green('Added ' + host))
 }
 
 /**
@@ -78,18 +69,11 @@ function set (ip, host) {
  * @param {string} host
  */
 function remove (host) {
-  hostile.get(false, function (err, lines) {
-    lines.forEach(function (item) {
-      if (item[1].indexOf(host) > -1) {
-        hostile.remove(item[0], host, function (err) {
-          if (err) {
-            return error(err.message)
-          }
-          console.log(chalk.green('Removed ' + host))
-        })
-        return
-      }
-    })
+  hostile.get(false).forEach(function (item) {
+    if (item[1].indexOf(host) > -1) {
+      hostile.remove(item[0], host)
+      console.log(chalk.green('Removed ' + host))
+    }
   })
 }
 

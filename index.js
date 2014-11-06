@@ -21,28 +21,35 @@ exports.HOSTS = WINDOWS
  * @param  {function(err, lines)} cb
  */
 exports.get = function (preserveFormatting, cb) {
-  cb = once(cb)
   var lines = []
+  if (typeof cb !== 'function') {
+    fs.readFileSync(exports.HOSTS, 'utf8').split(/\r?\n/).forEach(online)
+    return lines
+  }
+
+  cb = once(cb)
   fs.createReadStream(exports.HOSTS, 'utf8')
     .pipe(split())
-    .pipe(through(function (line) {
-      var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
-      if (matches && matches.length === 3) {
-        // Found a hosts entry
-        var ip = matches[1]
-        var host = matches[2]
-        lines.push([ip, host])
-      } else {
-        // Found a comment, blank line, or something else
-        if (preserveFormatting) {
-          lines.push(line)
-        }
-      }
-    }))
+    .pipe(through(online))
     .on('close', function () {
       cb(null, lines)
     })
     .on('error', cb)
+
+  function online (line) {
+    var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
+    if (matches && matches.length === 3) {
+      // Found a hosts entry
+      var ip = matches[1]
+      var host = matches[2]
+      lines.push([ip, host])
+    } else {
+      // Found a comment, blank line, or something else
+      if (preserveFormatting) {
+        lines.push(line)
+      }
+    }
+  }
 }
 
 /**
@@ -53,25 +60,36 @@ exports.get = function (preserveFormatting, cb) {
  * @param  {function(Error)} cb
  */
 exports.set = function (ip, host, cb) {
+
+  var didUpdate = false
+  if (typeof cb !== 'function')
+    return _set(exports.get(true))
+
   exports.get(true, function (err, lines) {
+    if (err)
+      return cb(err)
+    _set(lines)
+  })
+
+  function _set (lines) {
 
     // Try to update entry, if host already exists in file
-    var didUpdate = false
-    lines = lines.map(function (line) {
-      if (Array.isArray(line) && line[1] === host) {
-        line[0] = ip
-        didUpdate = true
-      }
-      return line
-    })
+    lines = lines.map(mapFunc)
 
     // If entry did not exist, let's add it
-    if (!didUpdate) {
+    if (!didUpdate)
       lines.push([ip, host])
-    }
 
     exports.writeFile(lines, cb)
-  })
+  }
+
+  function mapFunc (line) {
+    if (Array.isArray(line) && line[1] === host) {
+      line[0] = ip
+      didUpdate = true
+    }
+    return line
+  }
 }
 
 /**
@@ -83,15 +101,23 @@ exports.set = function (ip, host, cb) {
  * @param  {function(Error)} cb
  */
 exports.remove = function (ip, host, cb) {
+  if (typeof cb !== 'function')
+    return _remove(exports.get(true))
   exports.get(true, function (err, lines) {
-
-    // Try to remove entry, if it exists
-    lines = lines.filter(function (line) {
-      return !(Array.isArray(line) && line[0] === ip && line[1] === host)
-    })
-
-    exports.writeFile(lines, cb)
+    if (err)
+      return cb(err)
+    _remove(lines)
   })
+
+  function _remove (lines) {
+    // Try to remove entry, if it exists
+    lines = lines.filter(filterFunc)
+    return exports.writeFile(lines, cb)
+  }
+
+  function filterFunc (line) {
+    return !(Array.isArray(line) && line[0] === ip && line[1] === host)
+  }
 }
 
 /**
@@ -102,6 +128,18 @@ exports.remove = function (ip, host, cb) {
  * @param  {function(Error)} cb
  */
 exports.writeFile = function (lines, cb) {
+  lines = lines.map(function (line, lineNum) {
+    if (Array.isArray(line))
+      line = line[0] + ' ' + line[1]
+    return line + (lineNum === lines.length - 1 ? '' : EOL)
+  })
+
+  if (typeof cb !== 'function') {
+    var stat = fs.statSync(exports.HOSTS)
+    fs.writeFileSync(exports.HOSTS, lines.join(''), { mode: stat.mode })
+    return true
+  }
+
   cb = once(cb)
   fs.stat(exports.HOSTS, function (err, stat) {
     if (err) {
@@ -111,11 +149,8 @@ exports.writeFile = function (lines, cb) {
     s.on('close', cb)
     s.on('error', cb)
 
-    lines.forEach(function (line, lineNum) {
-      if (Array.isArray(line)) {
-        line = line[0] + ' ' + line[1]
-      }
-      s.write(line + (lineNum === lines.length - 1 ? '' : EOL))
+    lines.forEach(function (data) {
+      s.write(data)
     })
     s.end()
   })
