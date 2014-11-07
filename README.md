@@ -68,6 +68,8 @@ downgrade to a normal user with
 [`process.setuid(id)`](http://nodejs.org/api/process.html#process_process_setuid_id)
 before you start accepting requests.
 
+**All methods have sync versions. Just omit the callback parameter.**
+
 #### add a rule to /etc/hosts
 
 ```js
