@@ -18,7 +18,7 @@ exports.HOSTS = WINDOWS
  * and other non-host entries in the result.
  *
  * @param  {boolean}   preserveFormatting
- * @param  {function(err, lines)} cb
+ * @param  {function(err, lines)=} cb
  */
 exports.get = function (preserveFormatting, cb) {
   var lines = []
@@ -57,22 +57,19 @@ exports.get = function (preserveFormatting, cb) {
  *
  * @param  {string}   ip
  * @param  {string}   host
- * @param  {function(Error)} cb
+ * @param  {function(Error)=} cb
  */
 exports.set = function (ip, host, cb) {
-
   var didUpdate = false
   if (typeof cb !== 'function')
     return _set(exports.get(true))
 
   exports.get(true, function (err, lines) {
-    if (err)
-      return cb(err)
+    if (err) return cb(err)
     _set(lines)
   })
 
   function _set (lines) {
-
     // Try to update entry, if host already exists in file
     lines = lines.map(mapFunc)
 
@@ -98,14 +95,14 @@ exports.set = function (ip, host, cb) {
  *
  * @param  {string}   ip
  * @param  {string}   host
- * @param  {function(Error)} cb
+ * @param  {function(Error)=} cb
  */
 exports.remove = function (ip, host, cb) {
   if (typeof cb !== 'function')
     return _remove(exports.get(true))
+
   exports.get(true, function (err, lines) {
-    if (err)
-      return cb(err)
+    if (err) return cb(err)
     _remove(lines)
   })
 
@@ -125,7 +122,7 @@ exports.remove = function (ip, host, cb) {
  * format that `get` returns.
  *
  * @param  {Array.<string|Array.<string>>} lines
- * @param  {function(Error)} cb
+ * @param  {function(Error)=} cb
  */
 exports.writeFile = function (lines, cb) {
   lines = lines.map(function (line, lineNum) {
