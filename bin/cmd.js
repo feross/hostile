@@ -35,7 +35,13 @@ function help () {
  * Display all current ip records
  */
 function list () {
-  hostile.get(false).forEach(function (item) {
+  var lines
+  try {
+    lines = hostile.get(false)
+  } catch (err) {
+    return error(err)
+  }
+  lines.forEach(function (item) {
     if (item.length > 1) {
       console.log(item[0], chalk.green(item[1]))
     } else {
@@ -60,7 +66,11 @@ function set (ip, host) {
     return error('Invalid IP address')
   }
 
-  hostile.set(ip, host)
+  try {
+    hostile.set(ip, host)
+  } catch (err) {
+    return error('Error: ' + err.message + '. Are you running as root?')
+  }
   console.log(chalk.green('Added ' + host))
 }
 
@@ -69,9 +79,19 @@ function set (ip, host) {
  * @param {string} host
  */
 function remove (host) {
-  hostile.get(false).forEach(function (item) {
+  var lines
+  try {
+    lines = hostile.get(false)
+  } catch (err) {
+    return error(err)
+  }
+  lines.forEach(function (item) {
     if (item[1].indexOf(host) > -1) {
-      hostile.remove(item[0], host)
+      try {
+        hostile.remove(item[0], host)
+      } catch (err) {
+        return error('Error: ' + err.message + '. Are you running as root?')
+      }
       console.log(chalk.green('Removed ' + host))
     }
   })
@@ -81,7 +101,7 @@ function remove (host) {
  * Print an error and exit the program
  * @param {string} message
  */
-function error (message) {
-  console.error(chalk.red(message))
+function error (err) {
+  console.error(chalk.red(err.message || err))
   process.exit(-1)
 }
