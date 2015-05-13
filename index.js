@@ -23,12 +23,12 @@ exports.HOSTS = WINDOWS
 exports.get = function (preserveFormatting, cb) {
   var lines = []
   if (typeof cb !== 'function') {
-    fs.readFileSync(exports.HOSTS, 'utf8').split(/\r?\n/).forEach(online)
+    fs.readFileSync(exports.HOSTS, { encoding: 'utf8' }).split(/\r?\n/).forEach(online)
     return lines
   }
 
   cb = once(cb)
-  fs.createReadStream(exports.HOSTS, 'utf8')
+  fs.createReadStream(exports.HOSTS, { encoding: 'utf8' })
     .pipe(split())
     .pipe(through(online))
     .on('close', function () {
