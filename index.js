@@ -74,8 +74,16 @@ exports.set = function (ip, host, cb) {
     lines = lines.map(mapFunc)
 
     // If entry did not exist, let's add it
-    if (!didUpdate)
-      lines.push([ip, host])
+    if (!didUpdate) {
+      // If the last line is empty, or just whitespace, then insert the new entry
+      // right before it
+      var lastLine = lines[lines.length - 1]
+      if (typeof lastLine === 'string' && /\s*/.test(lastLine)) {
+        lines.splice(lines.length - 1, 0, [ip, host])
+      } else {
+        lines.push([ip, host])
+      }
+    }
 
     exports.writeFile(lines, cb)
   }
