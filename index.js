@@ -61,8 +61,9 @@ exports.get = function (preserveFormatting, cb) {
  */
 exports.set = function (ip, host, cb) {
   var didUpdate = false
-  if (typeof cb !== 'function')
+  if (typeof cb !== 'function') {
     return _set(exports.get(true))
+  }
 
   exports.get(true, function (err, lines) {
     if (err) return cb(err)
@@ -106,8 +107,9 @@ exports.set = function (ip, host, cb) {
  * @param  {function(Error)=} cb
  */
 exports.remove = function (ip, host, cb) {
-  if (typeof cb !== 'function')
+  if (typeof cb !== 'function') {
     return _remove(exports.get(true))
+  }
 
   exports.get(true, function (err, lines) {
     if (err) return cb(err)
@@ -134,8 +136,9 @@ exports.remove = function (ip, host, cb) {
  */
 exports.writeFile = function (lines, cb) {
   lines = lines.map(function (line, lineNum) {
-    if (Array.isArray(line))
+    if (Array.isArray(line)) {
       line = line[0] + ' ' + line[1]
+    }
     return line + (lineNum === lines.length - 1 ? '' : EOL)
   })
 

@@ -19,7 +19,7 @@ if (!command) help()
  * Print help message
  */
 function help () {
-  console.log(function () {/*
+  console.log(function () { /*
   Usage: hostile [command]
 
     Commands:
@@ -28,7 +28,7 @@ function help () {
       set [ip] [host]        Set a domain in the hosts file
       remove [domain]        Remove a domain from the hosts file
 
-    */}.toString().split(/\n/).slice(1, -1).join('\n'))
+  */ }.toString().split(/\n/).slice(1, -1).join('\n'))
 }
 
 /**

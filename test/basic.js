@@ -12,7 +12,6 @@ test('setup', function (t) {
   fs.createReadStream(hostile.HOSTS)
     .pipe(fs.createWriteStream(TEST_HOSTS))
     .on('close', function () {
-
       // monkey patch the `fs` module
       var _createReadStream = fs.createReadStream
       fs.createReadStream = function (filename) {
