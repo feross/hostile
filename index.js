@@ -128,7 +128,7 @@ exports.writeFile = function (lines, cb) {
   lines = lines.map(function (line, lineNum) {
     if (Array.isArray(line))
       line = line[0] + ' ' + line[1]
-    return line + (lineNum === lines.length - 1 ? '' : EOL)
+    return line + (lineNum === lines.length - 2 ? '' : EOL)
   })
 
   if (typeof cb !== 'function') {
