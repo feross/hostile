@@ -14,9 +14,10 @@
     "minimist": "^1.1.0",
     "once": "^1.3.0",
     "split": "^1.0.0",
-    "through": "~2.3.4"
+    "through": "^2.3.4"
   },
   "devDependencies": {
+    "standard": "^7.0.0",
     "tape": "^4.0.0"
   },
   "homepage": "https://github.com/feross/hostile",
@@ -32,6 +33,6 @@
   "preferGlobal": "true",
   "repository": "git://github.com/feross/hostile",
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "standard && tape test/*.js"
   }
 }
