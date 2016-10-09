@@ -37,7 +37,9 @@ exports.get = function (preserveFormatting, cb) {
     .on('error', cb)
 
   function online (line) {
-    var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
+    // Remove all comment text from the line
+    var lineSansComments = line.replace(/#.*/, '')
+    var matches = /^\s*?(.+?)\s+(.+?)$/.exec(lineSansComments)
     if (matches && matches.length === 3) {
       // Found a hosts entry
       var ip = matches[1]
@@ -46,7 +48,7 @@ exports.get = function (preserveFormatting, cb) {
     } else {
       // Found a comment, blank line, or something else
       if (preserveFormatting) {
-        lines.push(line)
+        lines.push(lineSansComments)
       }
     }
   }
