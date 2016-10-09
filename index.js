@@ -48,7 +48,7 @@ exports.get = function (preserveFormatting, cb) {
     } else {
       // Found a comment, blank line, or something else
       if (preserveFormatting) {
-        lines.push(lineSansComments)
+        lines.push(line)
       }
     }
   }
