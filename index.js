@@ -12,44 +12,55 @@ exports.HOSTS = WINDOWS
   ? 'C:/Windows/System32/drivers/etc/hosts'
   : '/etc/hosts'
 
+  /**
+   * Get a list of the lines that make up the file_path. If the
+   * `preserveFormatting` parameter is true, then include comments, blank lines
+   * and other non-host entries in the result.
+   *
+   * @param  {boolean}   preserveFormatting
+   * @param  {function(err, lines)=} cb
+   */
+
+  exports.getFile = function (file_path, preserveFormatting, cb) {
+    var lines = []
+    if (typeof cb !== 'function') {
+      fs.readFileSync(file_path, { encoding: 'utf8' }).split(/\r?\n/).forEach(online)
+      return lines
+    }
+
+    cb = once(cb)
+    fs.createReadStream(file_path, { encoding: 'utf8' })
+      .pipe(split())
+      .pipe(through(online))
+      .on('close', function () {
+        cb(null, lines)
+      })
+      .on('error', cb)
+
+    function online (line) {
+      var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
+      if (matches && matches.length === 3) {
+        // Found a hosts entry
+        var ip = matches[1]
+        var host = matches[2]
+        lines.push([ip, host])
+      } else {
+        // Found a comment, blank line, or something else
+        if (preserveFormatting) {
+          lines.push(line)
+        }
+      }
+    }
+  }
+
 /**
- * Get a list of the lines that make up the /etc/hosts file. If the
- * `preserveFormatting` parameter is true, then include comments, blank lines
- * and other non-host entries in the result.
+ * Wrapper of `getFile` for getting a list of lines in the Host file
  *
  * @param  {boolean}   preserveFormatting
  * @param  {function(err, lines)=} cb
  */
 exports.get = function (preserveFormatting, cb) {
-  var lines = []
-  if (typeof cb !== 'function') {
-    fs.readFileSync(exports.HOSTS, { encoding: 'utf8' }).split(/\r?\n/).forEach(online)
-    return lines
-  }
-
-  cb = once(cb)
-  fs.createReadStream(exports.HOSTS, { encoding: 'utf8' })
-    .pipe(split())
-    .pipe(through(online))
-    .on('close', function () {
-      cb(null, lines)
-    })
-    .on('error', cb)
-
-  function online (line) {
-    var matches = /^\s*?([^#]+?)\s+([^#]+?)$/.exec(line)
-    if (matches && matches.length === 3) {
-      // Found a hosts entry
-      var ip = matches[1]
-      var host = matches[2]
-      lines.push([ip, host])
-    } else {
-      // Found a comment, blank line, or something else
-      if (preserveFormatting) {
-        lines.push(line)
-      }
-    }
-  }
+  return exports.getFile(exports.HOSTS, preserveFormatting, cb)
 }
 
 /**
