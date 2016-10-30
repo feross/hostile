@@ -103,42 +103,42 @@ function remove (host) {
 
 /**
  * Load hosts given a file
- * @param {string} file_path
+ * @param {string} filePath
  */
-function load (file_path) {
-  var lines = parseFile(file_path)
+function load (filePath) {
+  var lines = parseFile(filePath)
 
   lines.forEach(function (item) {
-    set(item[0], item[1]);
+    set(item[0], item[1])
   })
-  console.log(chalk.green("\nAdded %d hosts!"), lines.length);
+  console.log(chalk.green('\nAdded %d hosts!'), lines.length)
 }
 
 /**
  * Remove hosts given a file
- * @param {string} file_path
+ * @param {string} filePath
  */
-function unload (file_path) {
-  var lines = parseFile(file_path)
+function unload (filePath) {
+  var lines = parseFile(filePath)
 
   lines.forEach(function (item) {
-    hostile.remove(item[0], item[1]);
+    remove(item[0], item[1])
   })
-  console.log(chalk.green("Added %d removed!"), lines.length);
+  console.log(chalk.green('Removed %d hosts!'), lines.length)
 }
 
 /**
  * Get all the lines of the file as array of arrays [[IP, host]]
- * @param {string} file_path
+ * @param {string} filePath
  */
-function parseFile(file_path) {
+function parseFile (filePath) {
   var lines
   try {
-    lines = hostile.getFile(file_path, false);
+    lines = hostile.getFile(filePath, false)
   } catch (err) {
     return error(err)
   }
-  return lines;
+  return lines
 }
 
 /**
