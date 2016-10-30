@@ -13,6 +13,8 @@ var command = argv._[0]
 if (command === 'list' || command === 'ls') list()
 if (command === 'set') set(argv._[1], argv._[2])
 if (command === 'remove') remove(argv._[1])
+if (command === 'load') load(argv._[1])
+if (command === 'unload') unload(argv._[1])
 if (!command) help()
 
 /**
@@ -27,6 +29,8 @@ function help () {
       list                   List all current domain records in hosts file
       set [ip] [host]        Set a domain in the hosts file
       remove [domain]        Remove a domain from the hosts file
+      load [file]            Load a set of host entries from a file
+      unload [file]          Remove a set of host entries from a file
 
   */ }.toString().split(/\n/).slice(1, -1).join('\n'))
 }
@@ -95,6 +99,46 @@ function remove (host) {
       console.log(chalk.green('Removed ' + host))
     }
   })
+}
+
+/**
+ * Load hosts given a file
+ * @param {string} file_path
+ */
+function load (file_path) {
+  var lines = parseFile(file_path)
+
+  lines.forEach(function (item) {
+    set(item[0], item[1]);
+  })
+  console.log(chalk.green("\nAdded %d hosts!"), lines.length);
+}
+
+/**
+ * Remove hosts given a file
+ * @param {string} file_path
+ */
+function unload (file_path) {
+  var lines = parseFile(file_path)
+
+  lines.forEach(function (item) {
+    hostile.remove(item[0], item[1]);
+  })
+  console.log(chalk.green("Added %d removed!"), lines.length);
+}
+
+/**
+ * Get all the lines of the file as array of arrays [[IP, host]]
+ * @param {string} file_path
+ */
+function parseFile(file_path) {
+  var lines
+  try {
+    lines = hostile.getFile(file_path, false);
+  } catch (err) {
+    return error(err)
+  }
+  return lines;
 }
 
 /**

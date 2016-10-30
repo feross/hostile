@@ -46,6 +46,40 @@ example:
 hostile remove domain.com
 ```
 
+#### load a set of hosts from a file
+
+```bash
+hostile load [file_path]
+```
+hosts.txt
+```bash
+# hosts.txt
+127.0.0.1 github.com
+127.0.0.1 twitter.com
+```
+
+example:
+```bash
+hostile load hosts.txt
+```
+
+#### unload [remove] a set of hosts from a file
+
+```bash
+hostile unload [file_path]
+```
+
+```bash
+# hosts.txt
+127.0.0.1 github.com
+127.0.0.1 twitter.com
+```
+
+example:
+```bash
+hostile unload hosts.txt
+```
+
 #### set up auto completion
 
 bash:
@@ -111,7 +145,24 @@ hostile.get(preserveFormatting, function (err, lines) {
     console.error(err.message)
   }
   lines.forEach(function (line) {
-    console.log(line)
+    console.log(line) // [IP, Host]
+  })
+})
+```
+
+#### get all lines in any file
+
+```js
+// If `preserveFormatting` is true, then include comments, blank lines and other
+// non-host entries in the result
+var preserveFormatting = false
+
+hostile.getFile(file_path, preserveFormatting, function (err, lines) {
+  if (err) {
+    console.error(err.message)
+  }
+  lines.forEach(function (line) {
+    console.log(line) // [IP, Host]
   })
 })
 ```
