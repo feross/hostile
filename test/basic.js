@@ -67,3 +67,20 @@ test('remove', function (t) {
     })
   })
 })
+
+test('space-separated domains', function (t) {
+  t.plan(2)
+  hostile.set('127.0.0.5', 'www.peercdn.com  m.peercdn.com', function (err) {
+    t.error(err)
+    hostile.get(false, function (err, lines) {
+      t.error(err)
+      var finds = lines.filter(function (line) {
+        return line[0] === '127.0.0.5' && line[1] === 'www.peercdn.com  m.peercdn.com'
+      })
+
+      if (finds.length === 0) {
+        t.fail('add space-separated domain failed')
+      }
+    })
+  })
+})
