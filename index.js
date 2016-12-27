@@ -40,7 +40,7 @@ exports.getFile = function (filePath, preserveFormatting, cb) {
   function online (line) {
     // Remove all comment text from the line
     var lineSansComments = line.replace(/#.*/, '')
-    var matches = /^\s*?(.+?)\s+(.+)\s*$/.exec(lineSansComments)
+    var matches = /^\s*?(.+?)\s+(.+?)\s*$/.exec(lineSansComments)
     if (matches && matches.length === 3) {
       // Found a hosts entry
       var ip = matches[1]
