@@ -90,7 +90,7 @@ function remove (host) {
     return error(err)
   }
   lines.forEach(function (item) {
-    if (item[1].indexOf(host) > -1) {
+    if (item[1] === host) {
       try {
         hostile.remove(item[0], host)
       } catch (err) {
@@ -122,7 +122,7 @@ function unload (filePath) {
   var lines = parseFile(filePath)
 
   lines.forEach(function (item) {
-    remove(item[0], item[1])
+    remove(item[1])
   })
   console.log(chalk.green('Removed %d hosts!'), lines.length)
 }
