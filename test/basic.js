@@ -53,6 +53,24 @@ test('set', function (t) {
   })
 })
 
+test('set ipv6', function (t) {
+  t.plan(4)
+  hostile.set('::1', 'peercdn.com', function (err) {
+    t.error(err)
+    hostile.get(false, function (err, lines) {
+      t.error(err)
+      var exists = lines.some(function (line) {
+        return line[0] === '::1' && line[1] === 'peercdn.com'
+      })
+      t.ok(exists, 'ipv6 line was not added')
+      exists = lines.some(function (line) {
+        return line[0] === '127.0.0.1' && line[1] === 'peercdn.com'
+      })
+      t.ok(exists, 'ipv4 line was incorrectly removed')
+    })
+  })
+})
+
 test('remove', function (t) {
   t.plan(2)
   hostile.remove('127.0.0.1', 'peercdn.com', function (err) {
@@ -61,6 +79,21 @@ test('remove', function (t) {
       t.error(err)
       lines.forEach(function (line) {
         if (line[0] === '127.0.0.1' && line[1] === 'peercdn.com') {
+          t.fail('remove failed')
+        }
+      })
+    })
+  })
+})
+
+test('remove', function (t) {
+  t.plan(2)
+  hostile.remove('::1', 'peercdn.com', function (err) {
+    t.error(err)
+    hostile.get(false, function (err, lines) {
+      t.error(err)
+      lines.forEach(function (line) {
+        if (line[0] === '::1' && line[1] === 'peercdn.com') {
           t.fail('remove failed')
         }
       })
