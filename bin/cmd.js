@@ -3,8 +3,7 @@
 var chalk = require('chalk')
 var hostile = require('../')
 var minimist = require('minimist')
-
-var IP_RE = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/
+var net = require('net')
 
 var argv = minimist(process.argv.slice(2))
 
@@ -66,7 +65,7 @@ function set (ip, host) {
 
   if (ip === 'local' || ip === 'localhost') {
     ip = '127.0.0.1'
-  } else if (!IP_RE.test(ip)) {
+  } else if (!net.isIP(ip)) {
     return error('Invalid IP address')
   }
 
