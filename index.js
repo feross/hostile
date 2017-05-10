@@ -2,6 +2,7 @@ var fs = require('fs')
 var once = require('once')
 var split = require('split')
 var through = require('through')
+var net = require('net')
 
 var WINDOWS = process.platform === 'win32'
 var EOL = WINDOWS
@@ -103,7 +104,8 @@ exports.set = function (ip, host, cb) {
   }
 
   function mapFunc (line) {
-    if (Array.isArray(line) && line[1] === host) {
+    // replace a line if both hostname and ip version of the address matches
+    if (Array.isArray(line) && line[1] === host && net.isIP(line[0]) === net.isIP(ip)) {
       line[0] = ip
       didUpdate = true
     }
