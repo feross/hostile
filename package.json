@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "standard": "*",
-    "tape": "^4.0.0"
+    "tape": "^4.0.0",
+    "eslint": "*"
   },
   "homepage": "https://github.com/feross/hostile",
   "keywords": [
