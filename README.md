@@ -19,6 +19,17 @@
 npm install hostile
 ```
 
+## usage (interactive mode)
+
+Put the entries you want to add/remove into files under the "sets" folder. Run the following commands to give sudo access to the remainder of the terminal session and start up the hosts file manager:
+
+```bash
+sudo -s
+bin/cmd.js i
+```
+
+You will be presented a list of host file entry sets. You may select or deselect one or more sets with `<space>`, then press `<enter>` to make the change to the hosts file. Press `<ctrl-c>` to exit.
+
 ## usage
 
 If you use OS X or Linux, this module assumes your hosts file is at `/etc/hosts`. On

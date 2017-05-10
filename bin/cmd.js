@@ -3,7 +3,9 @@
 var chalk = require('chalk')
 var hostile = require('../')
 var minimist = require('minimist')
+var inquirer = require('inquirer')
 var net = require('net')
+var fs = require('fs')
 
 var argv = minimist(process.argv.slice(2))
 
@@ -14,7 +16,42 @@ if (command === 'set') set(argv._[1], argv._[2])
 if (command === 'remove') remove(argv._[1])
 if (command === 'load') load(argv._[1])
 if (command === 'unload') unload(argv._[1])
+if (command === 'i' || command === 'interactive') interactive()
 if (!command) help()
+
+function interactive () {
+  const sets = fs.readdirSync('./sets/').map(file => {
+    return {
+      name: file,
+      checked: false
+    }
+  })
+
+  function interactiveInternal () {
+    console.log('\u001b[2J\u001b[0;0H')
+    list()
+    inquirer.prompt({
+      type: 'checkbox',
+      message: 'Choose a set of entries',
+      name: 'sets',
+      choices: sets.map(function (c) {
+        return {name: c.name, value: c.name, checked: c.checked}
+      })
+    }).then(function (selections) {
+      sets.forEach(function (set) {
+        set.checked = selections.sets.includes(set.name)
+        if (set.checked) {
+          load('./sets/' + set.name)
+        } else {
+          unload('./sets/' + set.name)
+        }
+      })
+      // console.log(sets)
+      interactiveInternal()
+    })
+  }
+  interactiveInternal()
+}
 
 /**
  * Print help message
@@ -45,12 +82,13 @@ function list () {
     return error(err)
   }
   lines.forEach(function (item) {
-    if (item.length > 1) {
+    if (item.length > 1 && item[1] !== 'localhost' && item[1] !== 'broadcasthost') {
       console.log(item[0], chalk.green(item[1]))
     } else {
-      console.log(item)
+      // console.log(item)
     }
   })
+  console.log('\n')
 }
 
 /**
@@ -110,7 +148,7 @@ function load (filePath) {
   lines.forEach(function (item) {
     set(item[0], item[1])
   })
-  console.log(chalk.green('\nAdded %d hosts!'), lines.length)
+  // console.log(chalk.green('\nAdded %d hosts!'), lines.length)
 }
 
 /**
@@ -123,7 +161,7 @@ function unload (filePath) {
   lines.forEach(function (item) {
     remove(item[1])
   })
-  console.log(chalk.green('Removed %d hosts!'), lines.length)
+  // console.log(chalk.green('Removed %d hosts!'), lines.length)
 }
 
 /**
