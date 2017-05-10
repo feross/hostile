@@ -3,6 +3,8 @@
 var chalk = require('chalk')
 var hostile = require('../')
 var minimist = require('minimist')
+var prompt = require('prompt')
+var inquirer = require('inquirer')
 
 var IP_RE = /^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/
 
@@ -15,7 +17,76 @@ if (command === 'set') set(argv._[1], argv._[2])
 if (command === 'remove') remove(argv._[1])
 if (command === 'load') load(argv._[1])
 if (command === 'unload') unload(argv._[1])
+if (command === 'i' || command === 'interactive') interactive()
+if (command === 'i2') interactive2()
 if (!command) help()
+
+
+function interactive2() {
+  const clients = [
+      { name: 'ClubCar', checked: false},
+      { name: 'Karcher', checked: false},
+      { name: 'Kohler', checked: false},
+      { name: 'Odes', checked: false},
+      { name: 'Starrett', checked: false}
+  ]
+
+  function interactiveInternal() {
+      console.log('\u001b[2J\u001b[0;0H')
+      list()
+      inquirer.prompt({
+          type: 'checkbox',
+          message: 'Choose a client',
+          name: 'clients',
+          choices: clients.map(function (c) {
+              return {name: c.name, value: c.name, checked: c.checked}
+          })
+      }).then(function (selections) {
+          clients.forEach(function (client) {
+              client.checked = selections.clients.includes(client.name)
+              if (client.checked) {
+                  load(client.name)
+              }
+              else {
+                  unload(client.name)
+              }
+          })
+          //console.log(clients)
+          interactiveInternal()
+      })
+  }
+  interactiveInternal()
+}
+
+function interactive() {
+  prompt.start()
+
+  prompt.get(['command'], function (err, result) {
+    const parts = result.command.split(' ')
+    if (parts[0] === 'q') {
+      return
+    }
+    if (parts[0] === 'ls') {
+      console.log('\u001b[2J\u001b[0;0H')
+      list()
+    }
+    if (parts[0] === 'load') {
+      console.log('\u001b[2J\u001b[0;0H')
+      load(parts[1])
+      console.log('\n\n\n')
+      list()
+    }
+    if (parts[0] === 'unload') {
+      console.log('\u001b[2J\u001b[0;0H')
+      unload(parts[1])
+      console.log('\n\n\n')
+      list()
+    }
+
+    interactive()
+  })
+}
+
 
 /**
  * Print help message
@@ -46,12 +117,13 @@ function list () {
     return error(err)
   }
   lines.forEach(function (item) {
-    if (item.length > 1) {
+    if (item.length > 1 && item[1] !== 'localhost' && item[1] !== 'broadcasthost') {
       console.log(item[0], chalk.green(item[1]))
     } else {
-      console.log(item)
+      //console.log(item)
     }
   })
+  console.log('\n')
 }
 
 /**
@@ -111,7 +183,7 @@ function load (filePath) {
   lines.forEach(function (item) {
     set(item[0], item[1])
   })
-  console.log(chalk.green('\nAdded %d hosts!'), lines.length)
+  //console.log(chalk.green('\nAdded %d hosts!'), lines.length)
 }
 
 /**
@@ -124,7 +196,7 @@ function unload (filePath) {
   lines.forEach(function (item) {
     remove(item[1])
   })
-  console.log(chalk.green('Removed %d hosts!'), lines.length)
+  //console.log(chalk.green('Removed %d hosts!'), lines.length)
 }
 
 /**
