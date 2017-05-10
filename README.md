@@ -25,8 +25,10 @@ Put the entries you want to add/remove into files under the "sets" folder. Run t
 
 ```bash
 sudo -s
-bin/cmd.js -i
+bin/cmd.js i
 ```
+
+You will be presented a list of host file entry sets. You may select or deselect one or more sets with `<space>`, then press `<enter>` to make the change to the hosts file. Press `<ctrl-c>` to exit.
 
 ## usage
 
