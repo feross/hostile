@@ -3,9 +3,9 @@
 var chalk = require('chalk')
 var hostile = require('../')
 var minimist = require('minimist')
-var prompt = require('prompt')
 var inquirer = require('inquirer')
 var net = require('net')
+var fs = require('fs')
 
 var argv = minimist(process.argv.slice(2))
 
@@ -17,75 +17,40 @@ if (command === 'remove') remove(argv._[1])
 if (command === 'load') load(argv._[1])
 if (command === 'unload') unload(argv._[1])
 if (command === 'i' || command === 'interactive') interactive()
-if (command === 'i2') interactive2()
 if (!command) help()
 
-function interactive2 () {
-  const clients = [
-    { name: 'ClubCar', checked: false },
-    { name: 'Karcher', checked: false },
-    { name: 'Kohler', checked: false },
-    { name: 'Odes', checked: false },
-    { name: 'Starrett', checked: false }
-  ]
+function interactive () {
+  const sets = fs.readdirSync('./sets/').map(file => {
+    return {
+      name: file,
+      checked: false
+    }
+  })
 
   function interactiveInternal () {
     console.log('\u001b[2J\u001b[0;0H')
     list()
     inquirer.prompt({
       type: 'checkbox',
-      message: 'Choose a client',
-      name: 'clients',
-      choices: clients.map(function (c) {
+      message: 'Choose a set of entries',
+      name: 'sets',
+      choices: sets.map(function (c) {
         return {name: c.name, value: c.name, checked: c.checked}
       })
     }).then(function (selections) {
-      clients.forEach(function (client) {
-        client.checked = selections.clients.includes(client.name)
-        if (client.checked) {
-          load(client.name)
+      sets.forEach(function (set) {
+        set.checked = selections.sets.includes(set.name)
+        if (set.checked) {
+          load('./sets/' + set.name)
         } else {
-          unload(client.name)
+          unload('./sets/' + set.name)
         }
       })
-      // console.log(clients)
+      // console.log(sets)
       interactiveInternal()
     })
   }
   interactiveInternal()
-}
-
-function interactive () {
-  prompt.start()
-
-  prompt.get(['command'], function (err, result) {
-    if (err) {
-      return
-    }
-
-    const parts = result.command.split(' ')
-    if (parts[0] === 'q') {
-      return
-    }
-    if (parts[0] === 'ls') {
-      console.log('\u001b[2J\u001b[0;0H')
-      list()
-    }
-    if (parts[0] === 'load') {
-      console.log('\u001b[2J\u001b[0;0H')
-      load(parts[1])
-      console.log('\n\n\n')
-      list()
-    }
-    if (parts[0] === 'unload') {
-      console.log('\u001b[2J\u001b[0;0H')
-      unload(parts[1])
-      console.log('\n\n\n')
-      list()
-    }
-
-    interactive()
-  })
 }
 
 /**
