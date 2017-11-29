@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "main": "index.js",
-  "preferGlobal": "true",
+  "preferGlobal": true,
   "repository": "git://github.com/feross/hostile",
   "scripts": {
     "test": "standard && tape test/*.js"
