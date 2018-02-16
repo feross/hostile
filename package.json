@@ -2,10 +2,12 @@
   "name": "hostile",
   "description": "Simple /etc/hosts manipulation",
   "version": "1.3.0",
-  "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
-  "bin": {
-    "hostile": "bin/cmd.js"
+  "author": {
+    "name": "Feross Aboukhadijeh",
+    "email": "feross@feross.org",
+    "url": "https://feross.org"
   },
+  "bin": "bin/cmd.js",
   "bugs": {
     "url": "https://github.com/feross/hostile/issues"
   },
@@ -23,14 +25,13 @@
   "homepage": "https://github.com/feross/hostile",
   "keywords": [
     "/etc/hosts",
-    "hosts file",
-    "hostname",
+    "change hosts",
     "etc hosts",
-    "change hosts"
+    "hostname",
+    "hosts file"
   ],
   "license": "MIT",
   "main": "index.js",
-  "preferGlobal": true,
   "repository": "git://github.com/feross/hostile",
   "scripts": {
     "test": "standard && tape test/*.js"
