@@ -23,6 +23,8 @@ var LOCK_FILE = path.join(os.tmpdir(), 'hosts.' + LOCK_HASH + '.lock')
 // Lock file is considered invalid after 10 seconds.
 var LOCK_SYNC_OPTS = { stale: 10000 }
 var LOCK_ASYNC_OPTS = { wait: 10000, stale: LOCK_SYNC_OPTS.stale }
+var LOCK_ERROR_MSG = 'Unabled to create lock ' + LOCK_FILE + ', ' +
+  'perhaps another hostile process is writing ' + exports.HOSTS + '?'
 
 /**
    * Get a list of the lines that make up the filePath. If the
@@ -86,14 +88,18 @@ exports.get = function (preserveFormatting, cb) {
 exports.set = function (ip, host, cb) {
   var didUpdate = false
   if (typeof cb !== 'function') {
-    lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    try {
+      lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    } catch (e) {
+      throw new Error(LOCK_ERROR_MSG)
+    }
     var success = _set(exports.get(true))
     lockfile.unlockSync(LOCK_FILE)
     return success
   }
 
   lockfile.lock(LOCK_FILE, LOCK_ASYNC_OPTS, function (err) {
-    if (err) return cb(err)
+    if (err) return cb(new Error(LOCK_ERROR_MSG))
     exports.get(true, function (err, lines) {
       if (err) return cb(err)
       _set(lines)
@@ -143,14 +149,18 @@ exports.set = function (ip, host, cb) {
  */
 exports.remove = function (ip, host, cb) {
   if (typeof cb !== 'function') {
-    lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    try {
+      lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    } catch (e) {
+      throw new Error(LOCK_ERROR_MSG)
+    }
     var success = _remove(exports.get(true))
     lockfile.unlockSync(LOCK_FILE)
     return success
   }
 
   lockfile.lock(LOCK_FILE, LOCK_ASYNC_OPTS, function (err) {
-    if (err) return cb(err)
+    if (err) return cb(new Error(LOCK_ERROR_MSG))
     exports.get(true, function (err, lines) {
       if (err) return cb(err)
       _remove(lines)

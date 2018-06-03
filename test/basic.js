@@ -153,35 +153,3 @@ test('concurrent async remove', function (t) {
     })
   })
 })
-
-test('concurrent sync set', function (t) {
-  t.plan(4)
-  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
-  hostnames.forEach(function (hostname) {
-    hostile.set('127.0.0.6', hostname)
-  })
-  hostile.get(false, function (err, lines) {
-    t.error(err)
-    lines.forEach(function (line) {
-      if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
-        t.pass('set worked')
-      }
-    })
-  })
-})
-
-test('concurrent sync remove', function (t) {
-  t.plan(1)
-  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
-  hostnames.forEach(function (hostname) {
-    hostile.remove('127.0.0.6', hostname)
-  })
-  hostile.get(false, function (err, lines) {
-    t.error(err)
-    lines.forEach(function (line) {
-      if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
-        t.fail('set worked')
-      }
-    })
-  })
-})
