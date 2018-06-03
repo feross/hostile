@@ -1,16 +1,16 @@
 var fs = require('fs')
+var path = require('path')
 var once = require('once')
 var split = require('split')
 var through = require('through')
 var net = require('net')
 
+var EOL = require('os').EOL
+
 var WINDOWS = process.platform === 'win32'
-var EOL = WINDOWS
-  ? '\r\n'
-  : '\n'
 
 exports.HOSTS = WINDOWS
-  ? 'C:/Windows/System32/drivers/etc/hosts'
+  ? path.join(process.env.WINDIR, 'System32/drivers/etc/hosts')
   : '/etc/hosts'
 
   /**
