@@ -13,22 +13,17 @@ test('setup', function (t) {
     .pipe(fs.createWriteStream(TEST_HOSTS))
     .on('close', function () {
       // monkey patch the `fs` module
-      var _createReadStream = fs.createReadStream
-      fs.createReadStream = function (filename) {
-        var args = Array.prototype.slice.call(arguments, 0)
-        if (filename === hostile.HOSTS) {
-          args[0] = TEST_HOSTS
+      var functions = ['createReadStream', 'createWriteStream', 'readFileSync', 'writeFileSync']
+      functions.forEach(function (name) {
+        var _func = fs[name]
+        fs[name] = function (filename) {
+          var args = Array.prototype.slice.call(arguments, 0)
+          if (filename === hostile.HOSTS) {
+            args[0] = TEST_HOSTS
+          }
+          return _func.apply(fs, args)
         }
-        return _createReadStream.apply(fs, args)
-      }
-      var _createWriteStream = fs.createWriteStream
-      fs.createWriteStream = function (filename) {
-        var args = Array.prototype.slice.call(arguments, 0)
-        if (filename === hostile.HOSTS) {
-          args[0] = TEST_HOSTS
-        }
-        return _createWriteStream.apply(fs, args)
-      }
+      })
 
       t.pass('setup complete')
       t.end()
@@ -111,6 +106,82 @@ test('set and get space-separated domains', function (t) {
         return line[0] === '127.0.0.5' && line[1] === 'www.peercdn.com  m.peercdn.com'
       })
       t.ok(exists, 'host line exists')
+    })
+  })
+})
+
+test('concurrent async set', function (t) {
+  t.plan(7)
+  var completed = 0
+  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
+  hostnames.forEach(function (hostname) {
+    hostile.set('127.0.0.6', hostname, function (err) {
+      t.error(err)
+      completed++
+      if (completed === 3) {
+        hostile.get(false, function (err, lines) {
+          t.error(err)
+          lines.forEach(function (line) {
+            if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
+              t.pass('set worked')
+            }
+          })
+        })
+      }
+    })
+  })
+})
+
+test('concurrent async remove', function (t) {
+  t.plan(4)
+  var completed = 0
+  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
+  hostnames.forEach(function (hostname) {
+    hostile.remove('127.0.0.6', hostname, function (err) {
+      t.error(err)
+      completed++
+      if (completed === 3) {
+        hostile.get(false, function (err, lines) {
+          t.error(err)
+          lines.forEach(function (line) {
+            if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
+              t.fail('remove failed')
+            }
+          })
+        })
+      }
+    })
+  })
+})
+
+test('concurrent sync set', function (t) {
+  t.plan(4)
+  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
+  hostnames.forEach(function (hostname) {
+    hostile.set('127.0.0.6', hostname)
+  })
+  hostile.get(false, function (err, lines) {
+    t.error(err)
+    lines.forEach(function (line) {
+      if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
+        t.pass('set worked')
+      }
+    })
+  })
+})
+
+test('concurrent sync remove', function (t) {
+  t.plan(1)
+  var hostnames = ['peercdn1.com', 'peercdn2.com', 'peercdn3.com']
+  hostnames.forEach(function (hostname) {
+    hostile.remove('127.0.0.6', hostname)
+  })
+  hostile.get(false, function (err, lines) {
+    t.error(err)
+    lines.forEach(function (line) {
+      if (line[0] === '127.0.0.6' && hostnames.indexOf(line[1]) > -1) {
+        t.fail('set worked')
+      }
     })
   })
 })

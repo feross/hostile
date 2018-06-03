@@ -1,11 +1,14 @@
 var fs = require('fs')
+var os = require('os')
 var path = require('path')
 var once = require('once')
 var split = require('split')
 var through = require('through')
 var net = require('net')
+var crypto = require('crypto')
+var lockfile = require('lockfile')
 
-var EOL = require('os').EOL
+var EOL = os.EOL
 
 var WINDOWS = process.platform === 'win32'
 
@@ -13,7 +16,15 @@ exports.HOSTS = WINDOWS
   ? path.join(process.env.WINDIR, 'System32/drivers/etc/hosts')
   : '/etc/hosts'
 
-  /**
+// Create the lock file with a hash of locked file path in case multiple
+// instances this program edit different host files.
+var LOCK_HASH = crypto.createHash('md5').update(exports.HOSTS).digest('hex')
+var LOCK_FILE = path.join(os.tmpdir(), 'hosts.' + LOCK_HASH + '.lock')
+// Lock file is considered invalid after 10 seconds.
+var LOCK_SYNC_OPTS = { stale: 10000 }
+var LOCK_ASYNC_OPTS = { wait: 10000, stale: LOCK_SYNC_OPTS.stale }
+
+/**
    * Get a list of the lines that make up the filePath. If the
    * `preserveFormatting` parameter is true, then include comments, blank lines
    * and other non-host entries in the result.
@@ -21,7 +32,6 @@ exports.HOSTS = WINDOWS
    * @param  {boolean}   preserveFormatting
    * @param  {function(err, lines)=} cb
    */
-
 exports.getFile = function (filePath, preserveFormatting, cb) {
   var lines = []
   if (typeof cb !== 'function') {
@@ -76,12 +86,18 @@ exports.get = function (preserveFormatting, cb) {
 exports.set = function (ip, host, cb) {
   var didUpdate = false
   if (typeof cb !== 'function') {
-    return _set(exports.get(true))
+    lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    var success = _set(exports.get(true))
+    lockfile.unlockSync(LOCK_FILE)
+    return success
   }
 
-  exports.get(true, function (err, lines) {
+  lockfile.lock(LOCK_FILE, LOCK_ASYNC_OPTS, function (err) {
     if (err) return cb(err)
-    _set(lines)
+    exports.get(true, function (err, lines) {
+      if (err) return cb(err)
+      _set(lines)
+    })
   })
 
   function _set (lines) {
@@ -100,7 +116,11 @@ exports.set = function (ip, host, cb) {
       }
     }
 
-    exports.writeFile(lines, cb)
+    return exports.writeFile(lines, cb ? function (err) {
+      lockfile.unlock(LOCK_FILE, !err ? cb : function () {
+        cb(err)
+      })
+    } : null)
   }
 
   function mapFunc (line) {
@@ -123,18 +143,28 @@ exports.set = function (ip, host, cb) {
  */
 exports.remove = function (ip, host, cb) {
   if (typeof cb !== 'function') {
-    return _remove(exports.get(true))
+    lockfile.lockSync(LOCK_FILE, LOCK_SYNC_OPTS)
+    var success = _remove(exports.get(true))
+    lockfile.unlockSync(LOCK_FILE)
+    return success
   }
 
-  exports.get(true, function (err, lines) {
+  lockfile.lock(LOCK_FILE, LOCK_ASYNC_OPTS, function (err) {
     if (err) return cb(err)
-    _remove(lines)
+    exports.get(true, function (err, lines) {
+      if (err) return cb(err)
+      _remove(lines)
+    })
   })
 
   function _remove (lines) {
     // Try to remove entry, if it exists
     lines = lines.filter(filterFunc)
-    return exports.writeFile(lines, cb)
+    return exports.writeFile(lines, cb ? function (err) {
+      lockfile.unlock(LOCK_FILE, !err ? cb : function () {
+        cb(err)
+      })
+    } : null)
   }
 
   function filterFunc (line) {
