@@ -19,7 +19,7 @@
     "through": "^2.3.4"
   },
   "devDependencies": {
-    "standard": "*",
+    "standard": "11.0.1",
     "tape": "^4.0.0"
   },
   "homepage": "https://github.com/feross/hostile",
