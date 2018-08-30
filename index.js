@@ -13,14 +13,14 @@ exports.HOSTS = WINDOWS
   ? 'C:/Windows/System32/drivers/etc/hosts'
   : '/etc/hosts'
 
-  /**
-   * Get a list of the lines that make up the filePath. If the
-   * `preserveFormatting` parameter is true, then include comments, blank lines
-   * and other non-host entries in the result.
-   *
-   * @param  {boolean}   preserveFormatting
-   * @param  {function(err, lines)=} cb
-   */
+/**
+ * Get a list of the lines that make up the filePath. If the
+ * `preserveFormatting` parameter is true, then include comments, blank lines
+ * and other non-host entries in the result.
+ *
+ * @param  {boolean}   preserveFormatting
+ * @param  {function(err, lines)=} cb
+ */
 
 exports.getFile = function (filePath, preserveFormatting, cb) {
   var lines = []
