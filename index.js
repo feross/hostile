@@ -1,3 +1,4 @@
+/*! hostile. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 var fs = require('fs')
 var once = require('once')
 var split = require('split')
