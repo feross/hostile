@@ -89,19 +89,6 @@ example:
 hostile unload hosts.txt
 ```
 
-#### set up auto completion
-
-bash:
-```bash
-hostile --completion >> ~/hostile.completion.sh
-echo 'source ~/hostile.completion.sh' >> .bash_profile
-```
-
-zsh:
-```bash
-echo '. <(./hostile --completion)' >> .zshrc
-```
-
 ## methods
 
 Commands that modify the hosts file require root privileges.
