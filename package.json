@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "standard": "*",
-    "tape": "^5.0.1"
+    "tape": "^5.7.2"
   },
   "homepage": "https://github.com/feross/hostile",
   "keywords": [
