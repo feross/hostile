@@ -12,11 +12,11 @@
     "url": "https://github.com/feross/hostile/issues"
   },
   "dependencies": {
+    "@ljharb/through": "^2.3.11",
     "chalk": "^4.1.2",
     "minimist": "^1.2.8",
     "once": "^1.4.0",
-    "split": "^1.0.1",
-    "through": "^2.3.8"
+    "split": "^1.0.1"
   },
   "devDependencies": {
     "standard": "*",
