@@ -12,8 +12,8 @@
     "url": "https://github.com/feross/hostile/issues"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "minimist": "^1.2.5",
+    "chalk": "^4.1.2",
+    "minimist": "^1.2.8",
     "once": "^1.4.0",
     "split": "^1.0.1",
     "through": "^2.3.8"
