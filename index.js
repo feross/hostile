@@ -2,7 +2,7 @@
 var fs = require('fs')
 var once = require('once')
 var split = require('split')
-var through = require('through')
+var through = require('@ljharb/through')
 var net = require('net')
 
 var WINDOWS = process.platform === 'win32'
