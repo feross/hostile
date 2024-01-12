@@ -1,7 +1,7 @@
-# hostile [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
+# hostile [![ci][ci-image]][ci-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
 
-[travis-image]: https://img.shields.io/travis/feross/hostile/master.svg
-[travis-url]: https://travis-ci.org/feross/hostile
+[ci-image]: https://img.shields.io/github/workflow/status/feross/hostile/ci/master
+[ci-url]: https://github.com/feross/hostile/actions
 [npm-image]: https://img.shields.io/npm/v/hostile.svg
 [npm-url]: https://npmjs.org/package/hostile
 [downloads-image]: https://img.shields.io/npm/dm/hostile.svg
