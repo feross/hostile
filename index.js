@@ -2,7 +2,7 @@
 var fs = require('fs')
 var once = require('once')
 var split = require('split')
-var through = require('@ljharb/through')
+var { Writable } = require('node:stream')
 var net = require('net')
 
 var WINDOWS = process.platform === 'win32'
@@ -33,7 +33,12 @@ exports.getFile = function (filePath, preserveFormatting, cb) {
   cb = once(cb)
   fs.createReadStream(filePath, { encoding: 'utf8' })
     .pipe(split())
-    .pipe(through(online))
+    .pipe(new Writable({
+      write: (chunk, encoding, callback) => {
+        online(chunk.toString())
+        callback()
+      }
+    }))
     .on('close', function () {
       cb(null, lines)
     })

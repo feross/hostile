@@ -12,7 +12,6 @@
     "url": "https://github.com/feross/hostile/issues"
   },
   "dependencies": {
-    "@ljharb/through": "^2.3.11",
     "chalk": "^4.1.2",
     "minimist": "^1.2.8",
     "once": "^1.4.0",
