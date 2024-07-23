@@ -23,6 +23,11 @@ exports.HOSTS = WINDOWS
  * @param  {function(err, lines)=} cb
  */
 
+exports.setFile = function(filePath)
+{
+  exports.HOSTS = filePath
+}
+
 exports.getFile = function (filePath, preserveFormatting, cb) {
   var lines = []
   if (typeof cb !== 'function') {
